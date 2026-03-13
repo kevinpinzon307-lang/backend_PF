@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student');
 
-// --- Rutas para Estudiantes ---
 
 // CREAR un nuevo estudiante
 router.post('/', async (req, res) => {
@@ -41,9 +40,11 @@ router.post('/', async (req, res) => {
 // CONSULTAR todos los estudiantes
 router.get('/', async (req, res) => {
   try {
+    console.log('Iniciar consulta de estudiantes:', req.body);
     const students = await Student.find();
     res.json(students);
   } catch (err) {
+    console.log('Error consulta los estudiantes:', err.message);
     res.status(500).json({ message: err.message });
   }
 });
@@ -51,6 +52,8 @@ router.get('/', async (req, res) => {
 // CONSULTAR los grupos de un estudiante específico
 router.get('/:studentId/groups', async (req, res) => {
   try {
+    console.log('Iniciar consulta de grupo de estudiantes:', req.body);
+
     const student = await Student.findById(req.params.studentId)
       .populate({
         path: 'groups',
@@ -61,11 +64,12 @@ router.get('/:studentId/groups', async (req, res) => {
       });
 
     if (!student) {
-      return res.status(404).json({ message: 'Estudiante no encontrado' });
+      return res.status(404).json({ message: 'Estudiantes no encontrado' });
     }
 
     res.json(student.groups);
   } catch (err) {
+    console.log('Error consulta de grupo de estudiantes:', err.message);
     res.status(500).json({ message: err.message });
   }
 });
