@@ -69,7 +69,7 @@ router.get('/:studentId/groups', async (req, res) => {
 
     res.json(student.groups);
   } catch (err) {
-    console.log('Error consulta de grupo de estudiantes:', err.message);
+    console.log('Error consulta los grupos de estudiantes:', err.message);
     res.status(500).json({ message: err.message });
   }
 });
