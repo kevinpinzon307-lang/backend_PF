@@ -6,6 +6,7 @@ const Student = require('../models/Student'); // Necesitamos el modelo de Estudi
 // CREAR un nuevo grupo (y así asignar un profesor a un curso)
 router.post('/', async (req, res) => {
   try {
+    console.log("Creando un nuevo grupos :", req.body)
     const group = new Group({
       name: req.body.name,
       course: req.body.courseId,
@@ -20,17 +21,20 @@ router.post('/', async (req, res) => {
 
 // CONSULTAR todos los grupos (puede ser útil para admin)
 router.get('/', async (req, res) => {
-    try {
-        const groups = await Group.find().populate('course').populate('teacher');
-        res.json(groups);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    console.log("Consultando todos grupos :", req.body)
+    const groups = await Group.find().populate('course').populate('teacher');
+    res.json(groups);
+  } catch (err) {
+    console.log("Error consulta todos los grupos:", err.message)
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // INSCRIBIR un estudiante en un grupo
 router.post('/:groupId/students', async (req, res) => {
   try {
+    console.log("inscribir un estudiante en un grupo :", req.body )
     const group = await Group.findById(req.params.groupId);
     const student = await Student.findById(req.body.studentId);
 
@@ -43,9 +47,10 @@ router.post('/:groupId/students', async (req, res) => {
       student.groups.push(group._id);
       await student.save();
     }
-    
+
     res.status(200).json(student);
   } catch (err) {
+    console.log("Error escribir a un  estudiante a un grupo grupos:", err.message)
     res.status(500).json({ message: err.message });
   }
 });

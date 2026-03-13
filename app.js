@@ -3,19 +3,25 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 
-// Cargar variables de entorno
-dotenv.config();
+// Cargar variables de entorno (desde backend_PF/.env si existe, sin sobreescribir env vars del sistema)
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
-const port = 4020;
+const port = process.env.PORT || 4020;
 
 // Middleware para entender JSON
 app.use(express.json());
 
-// Servir archivos estáticos desde el directorio 'frontend'
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Servir archivos estáticos desde el directorio del frontend
+// Nota: en este repo el folder se llama 'frondend_PF' (así está escrito en disco).
+app.use(express.static(path.join(__dirname, '../frondend_PF')));
 
 // Conectar a MongoDB
+if (!process.env.MONGODB_URI) {
+  console.error('Falta la variable de entorno MONGODB_URI');
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Conectado a la base de datos MongoDB');
@@ -56,6 +62,6 @@ app.get(/^\/(?!auth|students|teachers|courses|groups|notes).*/, (req, res) => {
   res.redirect('/');
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
